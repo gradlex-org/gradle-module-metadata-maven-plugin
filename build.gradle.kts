@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradlex.maven-plugin-development") version "1.0.2"
+    id("org.gradlex.maven-plugin-development") version "1.0.3"
     id("com.gradleup.nmcp") version "0.0.9"
     id("maven-publish")
     id("signing")
