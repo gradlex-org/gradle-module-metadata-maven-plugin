@@ -26,12 +26,14 @@ Currently, this plugin supports the following features that cannot be expressed 
 
 Add the plugin to your build:
 
-```
+```xml
 <build>
   <plugins>
+    <!-- other 'package' phase plugins: flatten-maven-plugin, moditect-maven-plugin, ...-->
     <plugin>
       <groupId>org.gradlex</groupId>
       <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+      <!-- configuration below may also go into 'pluginManagement' and/or parent POM -->
       <version>1.0</version>
       <executions>
         <execution>
@@ -58,6 +60,9 @@ Add the plugin to your build:
 
 > [!NOTE]  
 > You can add the plugin in a parent POM to publish Gradle Module Metadata for all modules using that parent.
+> If you only add the configuration in a `<pluginManagement>` block, you can add it anywhere in the POM hierarchy.
+> The actual plugin declaration in the `<plugins>` block needs to be handled with care to ensure the plugin is the
+> last plugin declared for the 'package' phase (the warning below explains why).
 
 The published POM needs to contain the following line:
 
@@ -71,10 +76,9 @@ another plugin – such as the `flatten-maven-plugin` or `maven-shade-plugin` �
 you do not have to maintain it manually.  
 
 > [!WARNING]
-> This plugin runs in the `package` phase. If the published POM is modified in that phase, which is what the
-> `maven-shade-plugin` does, you need to guarantee that this plugin runs AFTER the other plugin. If you can't do that
-> you need to use some other method to add the comment to the POM after the `maven-shade-plugin` created it.
-> For example by using a `find-and-replace-maven-plugin` that puts the comment into the file.
+> This plugin runs in the `package` phase. If the JAR or the published POM is modified in that phase – e.g. by plugins
+> such as `moditect-maven-plugin`, `flatten-maven-plugin` or `maven-shade-plugin` – you need to guarantee that
+> this plugin runs AFTER the other plugin by putting it last in the `<plugins>` block.
 
 ## Adding platform dependencies
 
