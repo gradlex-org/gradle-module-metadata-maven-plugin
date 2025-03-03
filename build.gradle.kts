@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "org.gradlex"
-version = "1.0"
+version = "1.0.1"
 
 val mvnVersion = "3.9.9"
 
@@ -99,7 +99,7 @@ nmcp {
     publish("mavenPlugin") {
         username = providers.environmentVariable("MAVEN_CENTRAL_USERNAME")
         password = providers.environmentVariable("MAVEN_CENTRAL_PASSWORD")
-        publicationType = "USER_MANAGED" // "AUTOMATIC"
+        publicationType = "AUTOMATIC" // "USER_MANAGED"
     }
 }
 
