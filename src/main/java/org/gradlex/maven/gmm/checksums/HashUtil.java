@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashUtil {
 
-    public static HashValue createHash(File file, String algorithm) {
+    private static HashValue createHash(File file, String algorithm) {
         try {
             return createHash(new FileInputStream(file), algorithm);
         } catch (FileNotFoundException e) {
@@ -34,7 +34,7 @@ public class HashUtil {
         }
     }
 
-    public static HashValue createHash(InputStream instr, String algorithm) {
+    private static HashValue createHash(InputStream instr, String algorithm) {
         MessageDigest messageDigest;
         try {
             messageDigest = createMessageDigest(algorithm);
@@ -76,4 +76,7 @@ public class HashUtil {
         return createHash(file, "SHA-512");
     }
 
+    public static HashValue md5(File file) {
+        return createHash(file, "MD5");
+    }
 }
