@@ -260,11 +260,12 @@ class GMMMavenPluginTest {
     }
 
     private void installProducerLocally() {
-        exec("mvn clean install -DskipTests -Dgpg.skip", mavenProducerBuild.getParentFile());
+        exec("mvn clean install -DskipTests -Dgpg.skip --no-transfer-progress --batch-mode",
+                mavenProducerBuild.getParentFile());
     }
 
     private void packageProducer() {
-        exec("mvn clean package", mavenProducerBuild.getParentFile());
+        exec("mvn clean package --no-transfer-progress --batch-mode", mavenProducerBuild.getParentFile());
     }
 
     private void moduleJsonGenerated() {

@@ -230,7 +230,7 @@ public class GradleModuleMetadataWriter {
         jsonWriter.name("sha1");
         jsonWriter.value(HashUtil.sha1(artifact).asHexString());
         jsonWriter.name("md5");
-        jsonWriter.value(HashUtil.createHash(artifact, "md5").asHexString());
+        jsonWriter.value(HashUtil.md5(artifact).asHexString());
     }
 
     private static void writeDependencies(Variant variant,

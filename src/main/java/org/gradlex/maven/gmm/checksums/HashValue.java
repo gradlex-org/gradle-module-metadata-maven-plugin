@@ -16,18 +16,22 @@
 
 package org.gradlex.maven.gmm.checksums;
 
-import java.math.BigInteger;
+import java.util.Arrays;
 
 public class HashValue {
 
-    private final BigInteger digest;
+    private final byte[] digest;
 
     public HashValue(byte[] digest) {
-        this.digest = new BigInteger(1, digest);
+        this.digest = digest;
     }
 
     public String asHexString() {
-        return digest.toString(16);
+        StringBuilder sb = new StringBuilder(digest.length * 2);
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
     @Override
@@ -40,11 +44,11 @@ public class HashValue {
         }
 
         HashValue otherHashValue = (HashValue) other;
-        return digest.equals(otherHashValue.digest);
+        return Arrays.equals(digest, otherHashValue.digest);
     }
 
     @Override
     public int hashCode() {
-        return digest.hashCode();
+        return Arrays.hashCode(digest);
     }
 }
