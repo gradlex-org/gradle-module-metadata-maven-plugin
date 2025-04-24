@@ -12,7 +12,7 @@ version = "1.0.1"
 val mvnVersion = "3.9.9"
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.0")
+    implementation("com.google.code.gson:gson:2.13.1")
 
     compileOnly("org.apache.maven:maven-core:$mvnVersion")
     compileOnly("org.apache.maven:maven-plugin-api:$mvnVersion")
