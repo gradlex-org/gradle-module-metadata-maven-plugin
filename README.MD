@@ -34,7 +34,7 @@ Add the plugin to your build:
       <groupId>org.gradlex</groupId>
       <artifactId>gradle-module-metadata-maven-plugin</artifactId>
       <!-- configuration below may also go into 'pluginManagement' and/or parent POM -->
-      <version>1.0.1</version>
+      <version>1.1</version>
       <executions>
         <execution>
           <goals>

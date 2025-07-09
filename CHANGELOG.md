@@ -1,5 +1,8 @@
 # Gradle Module Metadata Maven Plugin - Changelog
 
+## Version 1.1
+* [#43](https://github.com/gradlex-org/gradle-module-metadata-maven-plugin/issues/43) Do not add 'createdBy' to Gradle Module Metadata
+
 ## Version 1.0.1
 * [#33](https://github.com/gradlex-org/gradle-module-metadata-maven-plugin/issues/33) Fix: leading zeros of checksum values in metadata are missing
 
