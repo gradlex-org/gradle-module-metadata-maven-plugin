@@ -9,7 +9,7 @@ plugins {
 group = "org.gradlex"
 version = "1.0.1"
 
-val mvnVersion = "3.9.9"
+val mvnVersion = "3.9.10"
 
 dependencies {
     implementation("com.google.code.gson:gson:2.13.1")
