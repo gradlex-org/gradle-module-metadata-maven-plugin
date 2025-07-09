@@ -1,6 +1,7 @@
 plugins {
     id("org.gradlex.maven-plugin-development") version "1.0.3"
-    id("com.gradleup.nmcp") version "0.0.9"
+    id("com.gradleup.nmcp") version "1.0.1"
+    id("com.gradleup.nmcp.aggregation") version "1.0.1"
     id("maven-publish")
     id("signing")
     id("checkstyle")
@@ -17,6 +18,8 @@ dependencies {
     compileOnly("org.apache.maven:maven-core:$mvnVersion")
     compileOnly("org.apache.maven:maven-plugin-api:$mvnVersion")
     compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.1")
+
+    nmcpAggregation(project(path))
 }
 
 mavenPlugin {
@@ -58,7 +61,7 @@ testing.suites.named<JvmTestSuite>("test") {
 }
 
 publishing {
-    publications.create<MavenPublication>("mavenPlugin") {
+    publications.register<MavenPublication>("mavenPlugin") {
         from(components["java"])
         pom {
             name = mavenPlugin.name
@@ -95,11 +98,11 @@ signing {
     }
 }
 
-nmcp {
-    publish("mavenPlugin") {
+nmcpAggregation {
+    centralPortal {
         username = providers.environmentVariable("MAVEN_CENTRAL_USERNAME")
         password = providers.environmentVariable("MAVEN_CENTRAL_PASSWORD")
-        publicationType = "AUTOMATIC" // "USER_MANAGED"
+        publishingType = "AUTOMATIC" // "USER_MANAGED"
     }
 }
 
