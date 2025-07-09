@@ -13,7 +13,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
-      - run: "./gradlew publishAllPublicationsToCentralPortal -Psign=true"
+      - run: "./gradlew publishAggregationToCentralPortal -Psign=true"
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
