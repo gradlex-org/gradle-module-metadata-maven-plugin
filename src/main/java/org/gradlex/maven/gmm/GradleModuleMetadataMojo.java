@@ -16,7 +16,6 @@
 
 package org.gradlex.maven.gmm;
 
-import org.apache.maven.Maven;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,10 +29,8 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Goal that generates Gradle Module Metadata.
@@ -83,7 +80,7 @@ public class GradleModuleMetadataMojo extends AbstractMojo {
 
         try (FileWriter fileWriter = new FileWriter(moduleFile)) {
             GradleModuleMetadataWriter.generateTo(
-                    project, getMavenVersion(),
+                    project,
                     platformDependencies,
                     capabilities,
                     removedDependencies,
@@ -107,23 +104,6 @@ public class GradleModuleMetadataMojo extends AbstractMojo {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static String getMavenVersion() throws MojoExecutionException {
-        try (InputStream resource = Maven.class.getClassLoader().getResourceAsStream("org/apache/maven/messages/build.properties")) {
-            if (resource == null) {
-                throw new MojoExecutionException("Unable to determine Maven version.");
-            }
-            Properties properties = new Properties();
-            properties.load(resource);
-            String version = properties.getProperty("version");
-            if (version == null) {
-                throw new MojoExecutionException("Unable to determine Maven version.");
-            }
-            return version;
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to determine Maven version.", e);
         }
     }
 }

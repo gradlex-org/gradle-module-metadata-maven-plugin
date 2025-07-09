@@ -8,11 +8,6 @@
       "org.gradle.status": "integration"
     }
   },
-  "createdBy": {
-    "maven": {
-      "version": "3.9.10"
-    }
-  },
   "variants": [
     {
       "name": "apiElements",

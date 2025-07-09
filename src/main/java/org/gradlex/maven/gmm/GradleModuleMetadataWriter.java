@@ -54,7 +54,7 @@ public class GradleModuleMetadataWriter {
         }
     }
 
-    public static void generateTo(MavenProject project, String mavenVersion,
+    public static void generateTo(MavenProject project,
                                   List<Dependency> platformDependencies, List<Capability> capabilities,
                                   List<Dependency> removedDependencies,
                                   List<Dependency> compileOnlyApiDependencies,
@@ -62,7 +62,7 @@ public class GradleModuleMetadataWriter {
         JsonWriter jsonWriter = new JsonWriter(writer);
         jsonWriter.setHtmlSafe(false);
         jsonWriter.setIndent("  ");
-        writeComponentWithVariants(project, mavenVersion, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
+        writeComponentWithVariants(project, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
         jsonWriter.flush();
         writer.append('\n');
     }
@@ -89,7 +89,7 @@ public class GradleModuleMetadataWriter {
         return attributes;
     }
 
-    private static void writeComponentWithVariants(MavenProject project, String mavenVersion,
+    private static void writeComponentWithVariants(MavenProject project,
                                                    List<Dependency> platformDependencies,
                                                    List<Capability> capabilities,
                                                    List<Dependency> removedDependencies,
@@ -98,7 +98,6 @@ public class GradleModuleMetadataWriter {
         jsonWriter.beginObject();
         writeFormat(jsonWriter);
         writeIdentity(project, jsonWriter);
-        writeCreator(mavenVersion, jsonWriter);
         writeVariants(project, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
         jsonWriter.endObject();
     }
@@ -130,17 +129,6 @@ public class GradleModuleMetadataWriter {
         writeVariant(project, Variant.API_ELEMENTS, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
         writeVariant(project, Variant.RUNTIME_ELEMENTS, platformDependencies, capabilities, removedDependencies, null, jsonWriter);
         jsonWriter.endArray();
-    }
-
-    private static void writeCreator(String mavenVersion, JsonWriter jsonWriter) throws IOException {
-        jsonWriter.name("createdBy");
-        jsonWriter.beginObject();
-        jsonWriter.name("maven");
-        jsonWriter.beginObject();
-        jsonWriter.name("version");
-        jsonWriter.value(mavenVersion);
-        jsonWriter.endObject();
-        jsonWriter.endObject();
     }
 
     private static void writeFormat(JsonWriter jsonWriter) throws IOException {
