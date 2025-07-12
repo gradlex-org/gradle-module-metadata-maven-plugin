@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 /**
@@ -40,16 +41,24 @@ public class GradleModuleMetadataWriter {
     private static final String FORMAT_VERSION = "1.1";
 
     private enum Variant {
-        API_ELEMENTS("apiElements", "java-api", Collections.singletonList("compile")),
-        RUNTIME_ELEMENTS("runtimeElements", "java-runtime", Arrays.asList("compile", "runtime"));
+        API_ELEMENTS("apiElements", "java-api", "library", "jar", null, Collections.singletonList("compile")),
+        RUNTIME_ELEMENTS("runtimeElements", "java-runtime", "library", "jar", null, Arrays.asList("compile", "runtime")),
+        JAVADOC_ELEMENTS("javadocElements", "java-runtime", "documentation", null, "javadoc", Collections.emptyList()),
+        SOURCES_ELEMENTS("sourcesElements", "java-runtime", "documentation", null, "sources", Collections.emptyList());
 
         private final String name;
         private final String usage;
+        private final String category;
+        private final String libraryelements; //nullable
+        private final String docstype; // nullable
         private final List<String> scopes;
 
-        Variant(String name, String usage, List<String> scopes) {
+        Variant(String name, String usage, String category, String libraryelements, String docstype, List<String> scopes) {
             this.name = name;
             this.usage = usage;
+            this.category = category;
+            this.libraryelements = libraryelements;
+            this.docstype = docstype;
             this.scopes = scopes;
         }
     }
@@ -78,9 +87,14 @@ public class GradleModuleMetadataWriter {
     private static Map<String, String> variantAttributes(Variant variant) {
         Map<String, String> attributes = new TreeMap<>();
 
-        attributes.put("org.gradle.category", "library");
+        attributes.put("org.gradle.category", variant.category);
         attributes.put("org.gradle.dependency.bundling", "external");
-        attributes.put("org.gradle.libraryelements", "jar");
+        if (variant.libraryelements != null) {
+            attributes.put("org.gradle.libraryelements", variant.libraryelements);
+        }
+        if (variant.docstype != null) {
+            attributes.put("org.gradle.docstype", variant.docstype);
+        }
 
         attributes.put("org.gradle.usage", variant.usage);
 
@@ -124,10 +138,20 @@ public class GradleModuleMetadataWriter {
                                       List<Dependency> removedDependencies,
                                       List<Dependency> compileOnlyApiDependencies,
                                       JsonWriter jsonWriter) throws IOException {
+
+        Optional<Artifact> javadocJar = project.getAttachedArtifacts().stream().filter(jar -> "javadoc".equals(jar.getClassifier())).findFirst();
+        Optional<Artifact> sourcesJar = project.getAttachedArtifacts().stream().filter(jar -> "sources".equals(jar.getClassifier())).findFirst();
+
         jsonWriter.name("variants");
         jsonWriter.beginArray();
-        writeVariant(project, Variant.API_ELEMENTS, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
-        writeVariant(project, Variant.RUNTIME_ELEMENTS, platformDependencies, capabilities, removedDependencies, null, jsonWriter);
+        writeVariant(project, Variant.API_ELEMENTS, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, project.getArtifact(), jsonWriter);
+        writeVariant(project, Variant.RUNTIME_ELEMENTS, platformDependencies, capabilities, removedDependencies, null, project.getArtifact(), jsonWriter);
+        if (javadocJar.isPresent()) {
+            writeVariant(project, Variant.JAVADOC_ELEMENTS, null, null, null, null, javadocJar.get(), jsonWriter);
+        }
+        if (sourcesJar.isPresent()) {
+            writeVariant(project, Variant.SOURCES_ELEMENTS, null, null, null, null, sourcesJar.get(), jsonWriter);
+        }
         jsonWriter.endArray();
     }
 
@@ -141,13 +165,13 @@ public class GradleModuleMetadataWriter {
                                      List<Capability> capabilities,
                                      List<Dependency> removedDependencies,
                                      List<Dependency> addedDependencies,
-                                     JsonWriter jsonWriter) throws IOException {
+                                     Artifact artifact, JsonWriter jsonWriter) throws IOException {
         jsonWriter.beginObject();
         jsonWriter.name("name");
         jsonWriter.value(variant.name);
         writeAttributes(variantAttributes(variant), jsonWriter);
         writeDependencies(variant, project.getDependencies(), platformDependencies, removedDependencies, addedDependencies, jsonWriter);
-        writeArtifacts(project, jsonWriter);
+        writeArtifacts(artifact, jsonWriter);
         writeCapabilities(project, capabilities, jsonWriter);
 
         jsonWriter.endObject();
@@ -168,10 +192,10 @@ public class GradleModuleMetadataWriter {
         jsonWriter.endObject();
     }
 
-    private static void writeArtifacts(MavenProject project, JsonWriter jsonWriter) throws IOException {
+    private static void writeArtifacts(Artifact artifact, JsonWriter jsonWriter) throws IOException {
         jsonWriter.name("files");
         jsonWriter.beginArray();
-        writeArtifact(project.getArtifact(), jsonWriter);
+        writeArtifact(artifact, jsonWriter);
         jsonWriter.endArray();
     }
 
