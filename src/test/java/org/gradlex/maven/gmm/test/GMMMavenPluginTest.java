@@ -31,6 +31,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -246,6 +247,21 @@ class GMMMavenPluginTest {
         assertExpectedGMM("variant-dependencies");
     }
 
+    @Test
+    void testWithJavadoc() {
+        assertExpectedGMM("with-javadoc");
+    }
+
+    @Test
+    void testWithSources() {
+        assertExpectedGMM("with-sources");
+    }
+
+    @Test
+    void testWithJavadocAndSources() {
+        assertExpectedGMM("with-javadoc-and-sources");
+    }
+
     List<String> resolve() {
         BuildResult buildResult = GradleRunner.create()
                 .forwardOutput()
@@ -280,6 +296,7 @@ class GMMMavenPluginTest {
         File testPom = new File("src/test/resources/" + name + "/pom.xml");
         File testPomParent = new File("src/test/resources/" + name + "/parent/pom.xml");
         File gmmExpected = new File("src/test/resources/" + name + "/expected-module.json");
+        File javaClass = new File("src/test/resources/" + name + "/Dummy.java");
         assertThat(gmmExpected).exists();
 
         try {
@@ -289,6 +306,11 @@ class GMMMavenPluginTest {
                 Files.createDirectories(mavenProducerParent.getParentFile().toPath());
                 Files.copy(testPomParent.toPath(), mavenProducerParent.toPath());
             }
+            if (javaClass.exists()) {
+                Path target = mavenProducerBuild.getParentFile().toPath().resolve("src/main/java/org/example/Dummy.java");
+                Files.createDirectories(target.getParent());
+                Files.copy(javaClass.toPath(), target);
+            }
 
             packageProducer();
 
@@ -297,7 +319,7 @@ class GMMMavenPluginTest {
 
             JsonElement expected = JsonParser.parseReader(new FileReader(gmmExpected));
             JsonElement actual = JsonParser.parseReader(new FileReader(gmmActual));
-            assertThat(expected).isEqualTo(actual);
+            assertThat(actual).isEqualTo(expected);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
