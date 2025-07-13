@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "org.gradlex"
-version = "1.1"
+version = "1.2"
 
 val mvnVersion = "3.9.10"
 

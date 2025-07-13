@@ -1,5 +1,8 @@
 # Gradle Module Metadata Maven Plugin - Changelog
 
+## Version 1.2
+* [#45](https://github.com/gradlex-org/gradle-module-metadata-maven-plugin/issues/45) Add Javadoc/Sources variants if the corresponding Jar is published
+
 ## Version 1.1
 * [#43](https://github.com/gradlex-org/gradle-module-metadata-maven-plugin/issues/43) Do not add 'createdBy' to Gradle Module Metadata
 
