@@ -1,7 +1,10 @@
 plugins {
-    id("org.gradlex.maven-plugin-development") version "1.0.3"
-    id("com.gradleup.nmcp") version "1.0.1"
-    id("com.gradleup.nmcp.aggregation") version "1.0.1"
+    val nmcpVersion = "1.2.0"
+    val mavenPluginDevVersion = "1.0.3"
+
+    id("com.gradleup.nmcp") version nmcpVersion
+    id("com.gradleup.nmcp.aggregation") version nmcpVersion
+    id("org.gradlex.maven-plugin-development") version mavenPluginDevVersion
     id("maven-publish")
     id("signing")
     id("checkstyle")
