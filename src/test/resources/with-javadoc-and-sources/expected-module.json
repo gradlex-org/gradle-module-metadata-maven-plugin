@@ -87,11 +87,11 @@
         {
           "name": "example-1.0-javadoc.jar",
           "url": "example-1.0-javadoc.jar",
-          "size": 82294,
-          "sha512": "1aeb842140bbd05bbfba4883826fb5f14a7d5edce2af77304c4d321346864abe617137576e85201813e128e6b9a5e953730b5b9456b7b0a6ad370dbeee9b09e3",
-          "sha256": "a6230826fb438bb6ee392295e4e1901fbe92b6d854dd7c72f421f694aa1bc1e8",
-          "sha1": "071a6ac4c28b8b573cb647743c37953a4c9c9dba",
-          "md5": "7daa17d2c9da4a70c984ee39ef05f6f6"
+          "size": 82292,
+          "sha512": "b6d673df2c2daf11ced26da168a7676af1da003f28d68703d22aae424c01145a87da9605630a2c624317985b8640647d116376603f3aecf2e11c2b677dbbe1e8",
+          "sha256": "c6f9af2a4d539f9a49793946ace488b3ee6414ec7736330b53daefd6053bf4c7",
+          "sha1": "9c258cbfe57058f7e8ec54e2da58ccc30f56417a",
+          "md5": "da9bec6f4438e9bccdb97d6851950a0a"
         }
       ]
     },
