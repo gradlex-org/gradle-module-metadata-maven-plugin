@@ -1,28 +1,7 @@
-/*
- * Copyright the GradleX team.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// SPDX-License-Identifier: Apache-2.0
 package org.gradlex.maven.gmm;
 
 import com.google.gson.stream.JsonWriter;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Exclusion;
-import org.apache.maven.project.MavenProject;
-import org.gradlex.maven.gmm.checksums.HashUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -32,6 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
+import org.apache.maven.project.MavenProject;
+import org.gradlex.maven.gmm.checksums.HashUtil;
 
 /**
  * The Gradle module metadata file generator is responsible for generating a JSON file describing module metadata.
@@ -42,18 +26,25 @@ public class GradleModuleMetadataWriter {
 
     private enum Variant {
         API_ELEMENTS("apiElements", "java-api", "library", "jar", null, Collections.singletonList("compile")),
-        RUNTIME_ELEMENTS("runtimeElements", "java-runtime", "library", "jar", null, Arrays.asList("compile", "runtime")),
+        RUNTIME_ELEMENTS(
+                "runtimeElements", "java-runtime", "library", "jar", null, Arrays.asList("compile", "runtime")),
         JAVADOC_ELEMENTS("javadocElements", "java-runtime", "documentation", null, "javadoc", Collections.emptyList()),
         SOURCES_ELEMENTS("sourcesElements", "java-runtime", "documentation", null, "sources", Collections.emptyList());
 
         private final String name;
         private final String usage;
         private final String category;
-        private final String libraryelements; //nullable
+        private final String libraryelements; // nullable
         private final String docstype; // nullable
         private final List<String> scopes;
 
-        Variant(String name, String usage, String category, String libraryelements, String docstype, List<String> scopes) {
+        Variant(
+                String name,
+                String usage,
+                String category,
+                String libraryelements,
+                String docstype,
+                List<String> scopes) {
             this.name = name;
             this.usage = usage;
             this.category = category;
@@ -63,15 +54,24 @@ public class GradleModuleMetadataWriter {
         }
     }
 
-    public static void generateTo(MavenProject project,
-                                  List<Dependency> platformDependencies, List<Capability> capabilities,
-                                  List<Dependency> removedDependencies,
-                                  List<Dependency> compileOnlyApiDependencies,
-                                  Writer writer) throws IOException {
+    public static void generateTo(
+            MavenProject project,
+            List<Dependency> platformDependencies,
+            List<Capability> capabilities,
+            List<Dependency> removedDependencies,
+            List<Dependency> compileOnlyApiDependencies,
+            Writer writer)
+            throws IOException {
         JsonWriter jsonWriter = new JsonWriter(writer);
         jsonWriter.setHtmlSafe(false);
         jsonWriter.setIndent("  ");
-        writeComponentWithVariants(project, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
+        writeComponentWithVariants(
+                project,
+                platformDependencies,
+                capabilities,
+                removedDependencies,
+                compileOnlyApiDependencies,
+                jsonWriter);
         jsonWriter.flush();
         writer.append('\n');
     }
@@ -103,16 +103,24 @@ public class GradleModuleMetadataWriter {
         return attributes;
     }
 
-    private static void writeComponentWithVariants(MavenProject project,
-                                                   List<Dependency> platformDependencies,
-                                                   List<Capability> capabilities,
-                                                   List<Dependency> removedDependencies,
-                                                   List<Dependency> compileOnlyApiDependencies,
-                                                   JsonWriter jsonWriter) throws IOException {
+    private static void writeComponentWithVariants(
+            MavenProject project,
+            List<Dependency> platformDependencies,
+            List<Capability> capabilities,
+            List<Dependency> removedDependencies,
+            List<Dependency> compileOnlyApiDependencies,
+            JsonWriter jsonWriter)
+            throws IOException {
         jsonWriter.beginObject();
         writeFormat(jsonWriter);
         writeIdentity(project, jsonWriter);
-        writeVariants(project, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, jsonWriter);
+        writeVariants(
+                project,
+                platformDependencies,
+                capabilities,
+                removedDependencies,
+                compileOnlyApiDependencies,
+                jsonWriter);
         jsonWriter.endObject();
     }
 
@@ -131,21 +139,42 @@ public class GradleModuleMetadataWriter {
         jsonWriter.endObject();
     }
 
+    private static void writeVariants(
+            MavenProject project,
+            List<Dependency> platformDependencies,
+            List<Capability> capabilities,
+            List<Dependency> removedDependencies,
+            List<Dependency> compileOnlyApiDependencies,
+            JsonWriter jsonWriter)
+            throws IOException {
 
-    private static void writeVariants(MavenProject project,
-                                      List<Dependency> platformDependencies,
-                                      List<Capability> capabilities,
-                                      List<Dependency> removedDependencies,
-                                      List<Dependency> compileOnlyApiDependencies,
-                                      JsonWriter jsonWriter) throws IOException {
-
-        Optional<Artifact> javadocJar = project.getAttachedArtifacts().stream().filter(jar -> "javadoc".equals(jar.getClassifier())).findFirst();
-        Optional<Artifact> sourcesJar = project.getAttachedArtifacts().stream().filter(jar -> "sources".equals(jar.getClassifier())).findFirst();
+        Optional<Artifact> javadocJar = project.getAttachedArtifacts().stream()
+                .filter(jar -> "javadoc".equals(jar.getClassifier()))
+                .findFirst();
+        Optional<Artifact> sourcesJar = project.getAttachedArtifacts().stream()
+                .filter(jar -> "sources".equals(jar.getClassifier()))
+                .findFirst();
 
         jsonWriter.name("variants");
         jsonWriter.beginArray();
-        writeVariant(project, Variant.API_ELEMENTS, platformDependencies, capabilities, removedDependencies, compileOnlyApiDependencies, project.getArtifact(), jsonWriter);
-        writeVariant(project, Variant.RUNTIME_ELEMENTS, platformDependencies, capabilities, removedDependencies, null, project.getArtifact(), jsonWriter);
+        writeVariant(
+                project,
+                Variant.API_ELEMENTS,
+                platformDependencies,
+                capabilities,
+                removedDependencies,
+                compileOnlyApiDependencies,
+                project.getArtifact(),
+                jsonWriter);
+        writeVariant(
+                project,
+                Variant.RUNTIME_ELEMENTS,
+                platformDependencies,
+                capabilities,
+                removedDependencies,
+                null,
+                project.getArtifact(),
+                jsonWriter);
         if (javadocJar.isPresent()) {
             writeVariant(project, Variant.JAVADOC_ELEMENTS, null, null, null, null, javadocJar.get(), jsonWriter);
         }
@@ -160,17 +189,27 @@ public class GradleModuleMetadataWriter {
         jsonWriter.value(FORMAT_VERSION);
     }
 
-    private static void writeVariant(MavenProject project, Variant variant,
-                                     List<Dependency> platformDependencies,
-                                     List<Capability> capabilities,
-                                     List<Dependency> removedDependencies,
-                                     List<Dependency> addedDependencies,
-                                     Artifact artifact, JsonWriter jsonWriter) throws IOException {
+    private static void writeVariant(
+            MavenProject project,
+            Variant variant,
+            List<Dependency> platformDependencies,
+            List<Capability> capabilities,
+            List<Dependency> removedDependencies,
+            List<Dependency> addedDependencies,
+            Artifact artifact,
+            JsonWriter jsonWriter)
+            throws IOException {
         jsonWriter.beginObject();
         jsonWriter.name("name");
         jsonWriter.value(variant.name);
         writeAttributes(variantAttributes(variant), jsonWriter);
-        writeDependencies(variant, project.getDependencies(), platformDependencies, removedDependencies, addedDependencies, jsonWriter);
+        writeDependencies(
+                variant,
+                project.getDependencies(),
+                platformDependencies,
+                removedDependencies,
+                addedDependencies,
+                jsonWriter);
         writeArtifacts(artifact, jsonWriter);
         writeCapabilities(project, capabilities, jsonWriter);
 
@@ -245,12 +284,14 @@ public class GradleModuleMetadataWriter {
         jsonWriter.value(HashUtil.md5(artifact).asHexString());
     }
 
-    private static void writeDependencies(Variant variant,
-                                          List<Dependency> dependencies,
-                                          List<Dependency> platformDependencies,
-                                          List<Dependency> removedDependencies,
-                                          List<Dependency> addedDependencies,
-                                          JsonWriter jsonWriter) throws IOException {
+    private static void writeDependencies(
+            Variant variant,
+            List<Dependency> dependencies,
+            List<Dependency> platformDependencies,
+            List<Dependency> removedDependencies,
+            List<Dependency> addedDependencies,
+            JsonWriter jsonWriter)
+            throws IOException {
         if (dependencies.isEmpty() && isNullOrEmpty(platformDependencies) && isNullOrEmpty(addedDependencies)) {
             return;
         }
@@ -265,8 +306,10 @@ public class GradleModuleMetadataWriter {
                 // Dependency is not in scope
                 continue;
             }
-            if (removedDependencies != null && removedDependencies.stream().anyMatch(removed ->
-                    dependency.getGroupId().equals(removed.getGroupId()) && dependency.getArtifactId().equals(removed.getArtifactId()))) {
+            if (removedDependencies != null
+                    && removedDependencies.stream()
+                            .anyMatch(removed -> dependency.getGroupId().equals(removed.getGroupId())
+                                    && dependency.getArtifactId().equals(removed.getArtifactId()))) {
                 // Dependency is explicitly removed (e.g. because the shade plugin removes it from the POM as well)
                 continue;
             }
@@ -289,8 +332,8 @@ public class GradleModuleMetadataWriter {
         jsonWriter.endArray();
     }
 
-    private static void writeDependency(Dependency dependency, boolean toPlatform,
-                                        JsonWriter jsonWriter) throws IOException {
+    private static void writeDependency(Dependency dependency, boolean toPlatform, JsonWriter jsonWriter)
+            throws IOException {
         jsonWriter.beginObject();
         jsonWriter.name("group");
         jsonWriter.value(dependency.getGroupId());
@@ -356,8 +399,8 @@ public class GradleModuleMetadataWriter {
         jsonWriter.endArray();
     }
 
-    private static void writeCapabilities(MavenProject project, List<Capability> capabilities,
-                                          JsonWriter jsonWriter) throws IOException {
+    private static void writeCapabilities(MavenProject project, List<Capability> capabilities, JsonWriter jsonWriter)
+            throws IOException {
         if (capabilities != null && !capabilities.isEmpty()) {
             jsonWriter.name("capabilities");
             jsonWriter.beginArray();

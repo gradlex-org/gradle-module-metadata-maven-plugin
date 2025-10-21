@@ -1,30 +1,12 @@
-/*
- * Copyright the GradleX team.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// SPDX-License-Identifier: Apache-2.0
 package org.gradlex.maven.gmm.test;
+
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.writeString;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.GradleRunner;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,10 +16,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-
-import static java.nio.file.Files.createDirectories;
-import static java.nio.file.Files.writeString;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.GradleRunner;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class GMMMavenPluginTest {
 
@@ -66,7 +50,9 @@ class GMMMavenPluginTest {
 
     void producerGMMPluginConfiguration(String pluginConfiguration, String packaging) {
         try {
-            writeString(mavenProducerBuild.toPath(), """
+            writeString(
+                    mavenProducerBuild.toPath(),
+                    """
                 <project>
                   <modelVersion>4.0.0</modelVersion>
                   <groupId>org.gradlex</groupId>
@@ -74,7 +60,7 @@ class GMMMavenPluginTest {
                   <version>1.0</version>
                   <packaging>$packaging</packaging>
                   <name>Test GMM</name>
-    
+
                   <dependencies>
                     <dependency>
                       <groupId>commons-io</groupId>
@@ -82,7 +68,7 @@ class GMMMavenPluginTest {
                       <version>2.6</version>
                     </dependency>
                   </dependencies>
-    
+
                   <build>
                     <plugins>
                       <plugin>
@@ -100,7 +86,9 @@ class GMMMavenPluginTest {
                     </plugins>
                   </build>
                 </project>
-            """.replace("$pluginConfiguration", pluginConfiguration).replace("$packaging", packaging));
+            """
+                            .replace("$pluginConfiguration", pluginConfiguration)
+                            .replace("$packaging", packaging));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -109,7 +97,9 @@ class GMMMavenPluginTest {
 
     void consumerDependencies(String dependencyDeclarations) {
         try {
-            writeString(gradleConsumerBuild.toPath(), """
+            writeString(
+                    gradleConsumerBuild.toPath(),
+                    """
                 plugins {
                     id 'java-library'
                 }
@@ -125,7 +115,8 @@ class GMMMavenPluginTest {
                         configurations.compileClasspath.files.forEach { println(it.name) }
                     }
                 }
-            """.replace("$dependencyDeclarations", dependencyDeclarations));
+            """
+                            .replace("$dependencyDeclarations", dependencyDeclarations));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -134,13 +125,15 @@ class GMMMavenPluginTest {
     @Test
     void marker_comment_is_added_to_pom() {
         producerGMMPluginConfiguration("", "jar");
-        assertThat(mavenProducerBuild).content().contains(
-                "<modelVersion>4.0.0</modelVersion> <!-- do_not_remove: published-with-gradle-metadata -->");
+        assertThat(mavenProducerBuild)
+                .content()
+                .contains("<modelVersion>4.0.0</modelVersion> <!-- do_not_remove: published-with-gradle-metadata -->");
     }
 
     @Test
     void capabilities_are_available() {
-        producerGMMPluginConfiguration("""
+        producerGMMPluginConfiguration(
+                """
             <configuration>
               <capabilities>
                 <capability>
@@ -154,9 +147,11 @@ class GMMMavenPluginTest {
                 </capability>
               </capabilities>
             </configuration>
-        """, "jar");
+        """,
+                "jar");
 
-        consumerDependencies("""
+        consumerDependencies(
+                """
             implementation("org.gradlex:gradle-module-metadata-maven-plugin-integration-test:1.0") {
                 capabilities {
                     requireCapability("org.foo:another")
@@ -165,13 +160,14 @@ class GMMMavenPluginTest {
         """);
 
         moduleJsonGenerated();
-        assertThat(resolve()).containsExactly(
-                "gradle-module-metadata-maven-plugin-integration-test-1.0.jar", "commons-io-2.6.jar");
+        assertThat(resolve())
+                .containsExactly("gradle-module-metadata-maven-plugin-integration-test-1.0.jar", "commons-io-2.6.jar");
     }
 
     @Test
     void platform_dependencies_are_available() {
-        producerGMMPluginConfiguration("""
+        producerGMMPluginConfiguration(
+                """
             <configuration>
               <platformDependencies>
                 <dependency>
@@ -181,18 +177,21 @@ class GMMMavenPluginTest {
                 </dependency>
               </platformDependencies>
             </configuration>
-        """, "jar");
+        """,
+                "jar");
 
-        consumerDependencies("""
+        consumerDependencies(
+                """
             implementation("org.gradlex:gradle-module-metadata-maven-plugin-integration-test:1.0")
             implementation("com.fasterxml.jackson.core:jackson-core")
         """);
 
         moduleJsonGenerated();
-        assertThat(resolve()).containsExactly(
-                "gradle-module-metadata-maven-plugin-integration-test-1.0.jar",
-                "jackson-core-2.10.2.jar",
-                "commons-io-2.6.jar");
+        assertThat(resolve())
+                .containsExactly(
+                        "gradle-module-metadata-maven-plugin-integration-test-1.0.jar",
+                        "jackson-core-2.10.2.jar",
+                        "commons-io-2.6.jar");
     }
 
     @Test
@@ -266,17 +265,18 @@ class GMMMavenPluginTest {
         BuildResult buildResult = GradleRunner.create()
                 .forwardOutput()
                 .withProjectDir(gradleConsumerBuild.getParentFile())
-                .withArguments("resolve", "-q").build();
+                .withArguments("resolve", "-q")
+                .build();
         return Arrays.asList(buildResult.getOutput().trim().split("\n"));
     }
 
     private static void installPluginLocally() {
         exec("./gradlew publishToMavenLocal", null);
-
     }
 
     private void installProducerLocally() {
-        exec("mvn clean install -DskipTests -Dgpg.skip --no-transfer-progress --batch-mode",
+        exec(
+                "mvn clean install -DskipTests -Dgpg.skip --no-transfer-progress --batch-mode",
                 mavenProducerBuild.getParentFile());
     }
 
@@ -285,11 +285,13 @@ class GMMMavenPluginTest {
     }
 
     private void moduleJsonGenerated() {
-        assertThat(new File(mavenProducerBuild.getParentFile(), "target/publications/maven/module.json")).exists();
+        assertThat(new File(mavenProducerBuild.getParentFile(), "target/publications/maven/module.json"))
+                .exists();
     }
 
     private void moduleJsonNotGenerated() {
-        assertThat(new File(mavenProducerBuild.getParentFile(), "target/publications/maven/module.json")).doesNotExist();
+        assertThat(new File(mavenProducerBuild.getParentFile(), "target/publications/maven/module.json"))
+                .doesNotExist();
     }
 
     private void assertExpectedGMM(String name) {
@@ -307,7 +309,8 @@ class GMMMavenPluginTest {
                 Files.copy(testPomParent.toPath(), mavenProducerParent.toPath());
             }
             if (javaClass.exists()) {
-                Path target = mavenProducerBuild.getParentFile().toPath().resolve("src/main/java/org/example/Dummy.java");
+                Path target =
+                        mavenProducerBuild.getParentFile().toPath().resolve("src/main/java/org/example/Dummy.java");
                 Files.createDirectories(target.getParent());
                 Files.copy(javaClass.toPath(), target);
             }

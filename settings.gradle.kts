@@ -1,22 +1,5 @@
-plugins {
-    id("com.gradle.develocity") version "4.2.2"
-}
+pluginManagement { includeBuild("build/plugin-publish-conventions") }
+
+plugins { id("org.gradlex.internal.gradlex-build-conventions") version "0.7" }
 
 rootProject.name = "gradle-module-metadata-maven-plugin"
-
-@Suppress("UnstableApiUsage")
-dependencyResolutionManagement {
-    repositories.mavenCentral()
-}
-
-develocity {
-    buildScan {
-        val isCi = providers.environmentVariable("CI").getOrElse("false").toBoolean()
-        if (isCi) {
-            termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
-            termsOfUseAgree = "yes"
-        } else {
-            publishing.onlyIf { false }
-        }
-    }
-}
