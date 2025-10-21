@@ -327,7 +327,8 @@ class GMMMavenPluginTest {
 
     private static void exec(String command, File workDir) {
         try {
-            Process proc = Runtime.getRuntime().exec(command, null, workDir);
+            String[] javaHome = {"JAVA_HOME=" + System.getProperty("java.home")};
+            Process proc = Runtime.getRuntime().exec(command, javaHome, workDir);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String s;
             while ((s = stdInput.readLine()) != null) {
