@@ -20,7 +20,7 @@ dependencies {
 
     compileOnly("org.apache.maven:maven-core:$mvnVersion")
     compileOnly("org.apache.maven:maven-plugin-api:$mvnVersion")
-    compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.1")
+    compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.2")
 
     nmcpAggregation(project(path))
 }
