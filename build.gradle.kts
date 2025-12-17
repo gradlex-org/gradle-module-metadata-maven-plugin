@@ -2,7 +2,7 @@ plugins { id("org.gradlex.maven-plugin-development") version "1.0.3" }
 
 version = "1.2"
 
-val mvnVersion = "3.9.11"
+val mvnVersion = "3.9.12"
 
 dependencies {
     implementation("com.google.code.gson:gson:2.13.2")
