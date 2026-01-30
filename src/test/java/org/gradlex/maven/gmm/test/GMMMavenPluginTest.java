@@ -50,9 +50,7 @@ class GMMMavenPluginTest {
 
     void producerGMMPluginConfiguration(String pluginConfiguration, String packaging) {
         try {
-            writeString(
-                    mavenProducerBuild.toPath(),
-                    """
+            writeString(mavenProducerBuild.toPath(), """
                 <project>
                   <modelVersion>4.0.0</modelVersion>
                   <groupId>org.gradlex</groupId>
@@ -86,9 +84,8 @@ class GMMMavenPluginTest {
                     </plugins>
                   </build>
                 </project>
-            """
-                            .replace("$pluginConfiguration", pluginConfiguration)
-                            .replace("$packaging", packaging));
+            """.replace("$pluginConfiguration", pluginConfiguration)
+                    .replace("$packaging", packaging));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -97,9 +94,7 @@ class GMMMavenPluginTest {
 
     void consumerDependencies(String dependencyDeclarations) {
         try {
-            writeString(
-                    gradleConsumerBuild.toPath(),
-                    """
+            writeString(gradleConsumerBuild.toPath(), """
                 plugins {
                     id 'java-library'
                 }
@@ -115,8 +110,7 @@ class GMMMavenPluginTest {
                         configurations.compileClasspath.files.forEach { println(it.name) }
                     }
                 }
-            """
-                            .replace("$dependencyDeclarations", dependencyDeclarations));
+            """.replace("$dependencyDeclarations", dependencyDeclarations));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -132,8 +126,7 @@ class GMMMavenPluginTest {
 
     @Test
     void capabilities_are_available() {
-        producerGMMPluginConfiguration(
-                """
+        producerGMMPluginConfiguration("""
             <configuration>
               <capabilities>
                 <capability>
@@ -147,11 +140,9 @@ class GMMMavenPluginTest {
                 </capability>
               </capabilities>
             </configuration>
-        """,
-                "jar");
+        """, "jar");
 
-        consumerDependencies(
-                """
+        consumerDependencies("""
             implementation("org.gradlex:gradle-module-metadata-maven-plugin-integration-test:1.0") {
                 capabilities {
                     requireCapability("org.foo:another")
@@ -166,8 +157,7 @@ class GMMMavenPluginTest {
 
     @Test
     void platform_dependencies_are_available() {
-        producerGMMPluginConfiguration(
-                """
+        producerGMMPluginConfiguration("""
             <configuration>
               <platformDependencies>
                 <dependency>
@@ -177,11 +167,9 @@ class GMMMavenPluginTest {
                 </dependency>
               </platformDependencies>
             </configuration>
-        """,
-                "jar");
+        """, "jar");
 
-        consumerDependencies(
-                """
+        consumerDependencies("""
             implementation("org.gradlex:gradle-module-metadata-maven-plugin-integration-test:1.0")
             implementation("com.fasterxml.jackson.core:jackson-core")
         """);
