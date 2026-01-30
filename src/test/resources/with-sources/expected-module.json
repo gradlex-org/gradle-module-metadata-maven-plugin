@@ -87,11 +87,11 @@
         {
           "name": "example-1.0-sources.jar",
           "url": "example-1.0-sources.jar",
-          "size": 2002,
-          "sha512": "656e2b9daa2cce7bc88c8c647c83c1cabec73349bb25a1ed1f0d2724527fbbadd895ed5da53cee8e3516fc26b627be9e291668511a6196d2bf6e9804c441d2ba",
-          "sha256": "dd5da2763bba00328a36337dd08f73849b7d16d0214701bfe17b73e41d89faf7",
-          "sha1": "bbab2f32e16cc485c84e30a0918089b7f34a6fd8",
-          "md5": "c8e911f188115dd20539dcd4b1bccbc0"
+          "size": 2009,
+          "sha512": "c482f3abca1bbbd17afc2fae2102126882bf4315f445e44bb2ee5a2b75a08cf5df674f1e54f7b6d034eeb2cade899a7718917672d11315e4a6f84264bd59762f",
+          "sha256": "1859ce0304babc44721943cbc06e1f5ade84f197f3e2b192d61b72a63179b512",
+          "sha1": "c44f7bb97c6b1646f0bacf1181d8d1486bf9fbdc",
+          "md5": "463955ab1c611baa45994565e777e838"
         }
       ]
     }
