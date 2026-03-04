@@ -1,5 +1,8 @@
 plugins { id("org.gradlex.maven-plugin-development") version "1.0.3" }
 
+// CVE-2025-48924
+buildscript { dependencies.constraints { classpath("org.apache.commons:commons-lang3:3.20.0") } }
+
 version = "1.2"
 
 val mvnVersion = "3.9.12"
