@@ -1,7 +1,11 @@
 plugins { id("org.gradlex.maven-plugin-development") version "1.0.3" }
 
-// CVE-2025-48924
-buildscript { dependencies.constraints { classpath("org.apache.commons:commons-lang3:3.20.0") } }
+buildscript {
+    dependencies.constraints {
+        classpath("org.apache.commons:commons-lang3:3.20.0") // CVE-2025-48924
+        classpath("io.airlift:aircompressor:2.0.3") // CVE-2025-67721
+    }
+}
 
 version = "1.2"
 
