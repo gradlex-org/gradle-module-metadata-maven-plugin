@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 17.0.16
+          java-version: 17.0.18
       - uses: gradle/actions/setup-gradle@v6
         with:
           build-scan-terms-of-use-url: https://gradle.com/terms-of-service
