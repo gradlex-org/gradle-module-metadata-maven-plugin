@@ -12,7 +12,11 @@ jobs:
         with:
           distribution: temurin
           java-version: 17.0.16
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          build-scan-terms-of-use-url: https://gradle.com/terms-of-service
+          build-scan-terms-of-use-agree: yes
+      - uses: testlens-app/setup-testlens@v1.8.0
       - run: "./gradlew publishAggregationToCentralPortal"
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
