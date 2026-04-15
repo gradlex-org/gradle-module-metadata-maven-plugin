@@ -4,6 +4,7 @@ buildscript {
     dependencies.constraints {
         classpath("org.apache.commons:commons-lang3:3.20.0") // CVE-2025-48924
         classpath("io.airlift:aircompressor:2.0.3") // CVE-2025-67721
+        classpath("org.codehaus.plexus:plexus-utils:4.0.3") // CVE-2025-67030
     }
 }
 
@@ -18,6 +19,8 @@ dependencies {
     compileOnly("org.apache.maven:maven-plugin-api:$mvnVersion")
     compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.2")
 }
+
+dependencies.constraints { compileOnly("org.codehaus.plexus:plexus-utils:4.0.3") { because("CVE-2025-67030") } }
 
 configurations.api {
     withDependencies { clear() } // remove gradleApi() dependency
