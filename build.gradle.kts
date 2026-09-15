@@ -17,7 +17,7 @@ dependencies {
 
     compileOnly("org.apache.maven:maven-core:$mvnVersion")
     compileOnly("org.apache.maven:maven-plugin-api:$mvnVersion")
-    compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.2")
+    compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.16.0")
 }
 
 dependencies.constraints { compileOnly("org.codehaus.plexus:plexus-utils:4.0.3") { because("CVE-2025-67030") } }
