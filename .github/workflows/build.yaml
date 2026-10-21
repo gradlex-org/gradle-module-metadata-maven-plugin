@@ -18,5 +18,5 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
         with:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
-      - uses: testlens-app/setup-testlens@v1.9.4
+      - uses: testlens-app/setup-testlens@v1.10.0
       - run: "./gradlew build"
