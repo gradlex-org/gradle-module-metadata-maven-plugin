@@ -9,7 +9,7 @@ jobs:
   dependency-submission:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: gradle/actions/dependency-submission@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: gradle/actions/dependency-submission@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
