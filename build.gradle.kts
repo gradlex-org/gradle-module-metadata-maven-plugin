@@ -10,7 +10,7 @@ buildscript {
 
 version = "1.2"
 
-val mvnVersion = "3.10.1"
+val mvnVersion = "3.10.2"
 
 dependencies {
     implementation("com.google.code.gson:gson:2.15.0")
